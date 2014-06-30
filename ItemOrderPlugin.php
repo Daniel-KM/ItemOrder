@@ -8,7 +8,7 @@
 */
 
 /** Path to plugin directory */
-defined('ITEM_ORDER_PLUGIN_DIRECTORY') 
+defined('ITEM_ORDER_PLUGIN_DIRECTORY')
     or define('ITEM_ORDER_PLUGIN_DIRECTORY', dirname(__FILE__));
 
 /**
@@ -20,14 +20,14 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
      * @var array Hooks for the plugin.
      */
     protected $_hooks = array(
-        'install', 
+        'install',
         'uninstall',
         'upgrade',
         'define_acl',
-        'after_save_item', 
-        'after_delete_item', 
+        'after_save_item',
+        'after_delete_item',
         'items_browse_sql',
-        'admin_collections_show', 
+        'admin_collections_show',
     );
 
     /**
@@ -41,7 +41,7 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
      * @var array Options and their default values.
      */
     protected $_options = array();
-    
+
     /**
      * Install the plugin.
      */
@@ -58,7 +58,7 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $this->_db->query($sql);
     }
-    
+
     /**
      * Uninstall the plugin.
      */
@@ -67,35 +67,35 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
         $sql = "DROP TABLE IF EXISTS {$this->_db->ItemOrder_ItemOrder}";
         $this->_db->query($sql);
     }
-    
+
     /**
      * Upgrade the plugin
      */
-    public function hookUpgrade($args) 
+    public function hookUpgrade($args)
     {
         $oldVersion = $args['old_version'];
         $newVersion = $args['new_version'];
         $db = $this->_db;
-        
+
         if (version_compare($oldVersion, '2.0-dev', '<=')) {
             $sql = "ALTER TABLE `{$db->prefix}item_orders` RENAME TO `{$this->_db->ItemOrder_ItemOrder}` ";
             $db->query($sql);
             $sql = "ALTER TABLE `{$this->_db->ItemOrder_ItemOrder}` ADD INDEX `item_id_order` (`item_id`,`order`) ";
-            $db->query($sql);            
-        }   
+            $db->query($sql);
+        }
     }
-    
+
     /**
      * Define the ACL.
-     * 
+     *
      * @param array $args
      */
     public function hookDefineAcl($args)
     {
-        $acl = $args['acl']; // get the Zend_Acl   
+        $acl = $args['acl']; // get the Zend_Acl
         $acl->addResource('ItemOrder_Index');
     }
-    
+
     /**
      * After save item hook.
      *
@@ -107,15 +107,15 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
         $item = $args['record'];
         if ($item->collection_id) {
             $sql = "
-            DELETE FROM {$this->_db->ItemOrder_ItemOrder} 
-            WHERE collection_id != ? 
+            DELETE FROM {$this->_db->ItemOrder_ItemOrder}
+            WHERE collection_id != ?
             AND item_id = ?";
             $this->_db->query($sql, array($item->collection_id, $item->id));
         } else {
             $this->hookAfterDeleteItem($args);
         }
      }
-     
+
      /**
       * After delete item hook.
       *
@@ -126,11 +126,11 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
         // Delete the item order if the item was deleted.
         $item = $args['record'];
         $sql = "
-        DELETE FROM {$this->_db->ItemOrder_ItemOrder} 
+        DELETE FROM {$this->_db->ItemOrder_ItemOrder}
         WHERE item_id = ?";
         $this->_db->query($sql, $item->id);
     }
-    
+
     /**
      * Hooks into items_browse_sql
      *
@@ -141,14 +141,14 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
         $db = $this->_db;
         $select = $args['select'];
         $params = $args['params'];
-        
+
         // Order the items while browsing by collection.
-        
+
         // Do not filter if not browsing by collection.
         if (!isset($params['collection'])) {
             return;
         }
-                        
+
         // Do not filter if sorting by browse table header.
         if (isset($params['sort_field'])) {
             return;
@@ -164,7 +164,7 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
                    'items.id DESC'
                ));
     }
-    
+
     /**
      * Admin collection show content hook.
      *
