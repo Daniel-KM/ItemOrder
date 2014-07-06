@@ -7,8 +7,8 @@ jQuery(function() {
   jQuery('#sortable').sortable({
     update: function(event, ui) {
       jQuery.post(
-        'item-order/index/update-order?collection_id=<?php echo $collection->id; ?>', 
-        jQuery('#sortable').sortable('serialize'), 
+        'item-order/index/update-order?collection_id=<?php echo $collection->id; ?>',
+        jQuery('#sortable').sortable('serialize'),
         function(data) {}
       );
     }
@@ -24,9 +24,10 @@ jQuery(function() {
 </style>
 <div id="primary">
 <h2>Order Items in Collection "<?php echo html_escape(metadata($collection, array('Dublin Core', 'Title'))); ?>"</h2>
+<p>Order can be done via a form or via drag-and-drop. <a href="<?php echo url('item-order/index/update-via-form?collection_id=' . $collection->id); ?>">Click here</a> to order via a form.</p>
 <p>Drag and drop the items below to change their order.</p>
 <p>Changes are saved automatically.</p>
-<p><a href="<?php echo url('collections/show/' . $collection->id); ?>">Click here</a> 
+<p><a href="<?php echo url('collections/show/' . $collection->id); ?>">Click here</a>
 to return to the collection show page.</p>
 <p id="message" style="color: green;"></p>
 <ul id="sortable">
@@ -34,7 +35,7 @@ to return to the collection show page.</p>
     <?php
     $itemObj = get_record_by_id('item', $item['id']);
     $title = strip_formatting(metadata($itemObj, array('Dublin Core', 'Title')));
-    $creator = strip_formatting(metadata($itemObj, array('Dublin Core', 'Creator')));    
+    $creator = strip_formatting(metadata($itemObj, array('Dublin Core', 'Creator')));
     $dateAdded = format_date(strtotime($item['added']), Zend_Date::DATETIME_MEDIUM);
     ?>
     <li id="items-<?php echo html_escape($item['id']) ?>" class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
