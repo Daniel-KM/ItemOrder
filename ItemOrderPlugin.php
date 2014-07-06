@@ -154,6 +154,12 @@ class ItemOrderPlugin extends Omeka_Plugin_AbstractPlugin
             return;
         }
 
+        // Do not filter if there is already an order.
+        $order = $select->getPart('order');
+        if (!empty($order)) {
+            return;
+        }
+
         // Order the collection items by 1) whether an item order exists, 2) the
         // item order, 3) the item ID.
         $select->joinLeft(array('item_order_item_orders' => $db->ItemOrder_ItemOrder), 'items.id = item_order_item_orders.item_id', array())
