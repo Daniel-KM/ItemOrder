@@ -63,7 +63,7 @@ class ItemOrder_IndexController extends Omeka_Controller_AbstractActionControlle
         $list = str_replace(array(',', ';', "\r", "\t"), "\n", $itemOrderList);
         $list = explode("\n", $list);
         // Transform list of identifier into a list of item ids.
-        $ids = $view->getRecordsFromIdentifiers($list, false, 'id', false);
+        $ids = $view->getRecordsFromIdentifiers($list, false, 'Item', 'id', false);
         if ($ids) {
             // Need one item to get collection.
             $item = get_record_by_id('Item', reset($ids));
